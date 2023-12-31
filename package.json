@@ -169,7 +169,7 @@
     "autoprefixer": "^10.4.0",
     "copyfiles": "^2.4.1",
     "cspell": "^7.3.8",
-    "cypress": "^12.16.0",
+    "cypress": "^13.6.2",
     "esbuild": "^0.19.2",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
