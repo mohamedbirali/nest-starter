@@ -1,0 +1,94 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": ["@nx"],
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allowCircularSelfDependency": false,
+            "allow": ["@bee/**"],
+            "depConstraints": [
+              {
+                "sourceTag": "type:feature",
+                "onlyDependOnLibsWithTags": [
+                  "type:abstract",
+                  "type:ui",
+                  "type:data-access",
+                  "scope:shared"
+                ]
+              },
+              {
+                "sourceTag": "type:ui",
+                "onlyDependOnLibsWithTags": ["type:ui"]
+              },
+              {
+                "sourceTag": "type:data-access",
+                "onlyDependOnLibsWithTags": ["type:abstract"]
+              },
+              {
+                "sourceTag": "type:app",
+                "onlyDependOnLibsWithTags": ["type:route"]
+              },
+              {
+                "sourceTag": "type:route",
+                "onlyDependOnLibsWithTags": ["type:feature", "type:ui"]
+              },
+              {
+                "sourceTag": "type:api-common",
+                "onlyDependOnLibsWithTags": ["type:api-common"]
+              },
+              {
+                "sourceTag": "type:app-api",
+                "onlyDependOnLibsWithTags": [
+                  "type:api-common",
+                  "type:router-api",
+                  "type:job-api"
+                ]
+              },
+              {
+                "sourceTag": "scope:the-utils",
+                "onlyDependOnLibsWithTags": [
+                  "scope:the-utils",
+                  "type:abstract",
+                  "scope:shared"
+                ]
+              },
+              {
+                "sourceTag": "scope:container-ui",
+                "onlyDependOnLibsWithTags": [
+                  "scope:container-ui",
+                  "type:abstract",
+                  "scope:shared"
+                ]
+              }
+            ]
+          }
+        ],
+        "@typescript-eslint/no-non-null-assertion": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nx/typescript"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nx/javascript"],
+      "rules": {}
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "env": {
+        "jest": true
+      },
+      "rules": {}
+    }
+  ]
+}

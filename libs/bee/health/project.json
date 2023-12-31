@@ -1,0 +1,30 @@
+{
+  "name": "bee-health",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/health/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/health",
+        "tsConfig": "libs/bee/health/tsconfig.lib.json",
+        "packageJson": "libs/bee/health/package.json",
+        "main": "libs/bee/health/src/index.ts",
+        "assets": ["libs/bee/health/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/health/**/*.ts",
+          "libs/bee/health/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

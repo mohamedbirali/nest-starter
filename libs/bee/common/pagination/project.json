@@ -1,0 +1,30 @@
+{
+  "name": "common-pagination",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/pagination/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/pagination",
+        "tsConfig": "libs/bee/common/pagination/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/pagination/package.json",
+        "main": "libs/bee/common/pagination/src/index.ts",
+        "assets": ["libs/bee/common/pagination/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/pagination/**/*.ts",
+          "libs/bee/common/pagination/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "bee-router",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/router/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/router",
+        "tsConfig": "libs/bee/router/tsconfig.lib.json",
+        "packageJson": "libs/bee/router/package.json",
+        "main": "libs/bee/router/src/index.ts",
+        "assets": ["libs/bee/router/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/router/**/*.ts",
+          "libs/bee/router/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

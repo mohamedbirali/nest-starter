@@ -1,0 +1,30 @@
+{
+  "name": "common-role",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/modules/role/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/modules/role",
+        "tsConfig": "libs/bee/modules/role/tsconfig.lib.json",
+        "packageJson": "libs/bee/modules/role/package.json",
+        "main": "libs/bee/modules/role/src/index.ts",
+        "assets": ["libs/bee/modules/role/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/modules/role/**/*.ts",
+          "libs/bee/modules/role/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

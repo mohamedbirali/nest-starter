@@ -1,0 +1,30 @@
+{
+  "name": "bee-env",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/env/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/env",
+        "tsConfig": "libs/bee/env/tsconfig.lib.json",
+        "packageJson": "libs/bee/env/package.json",
+        "main": "libs/bee/env/src/index.ts",
+        "assets": ["libs/bee/env/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/env/**/*.ts",
+          "libs/bee/env/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

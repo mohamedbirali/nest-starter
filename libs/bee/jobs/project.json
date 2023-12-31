@@ -1,0 +1,30 @@
+{
+  "name": "bee-jobs",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/jobs/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/jobs",
+        "tsConfig": "libs/bee/jobs/tsconfig.lib.json",
+        "packageJson": "libs/bee/jobs/package.json",
+        "main": "libs/bee/jobs/src/index.ts",
+        "assets": ["libs/bee/jobs/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/jobs/**/*.ts",
+          "libs/bee/jobs/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:job-api"]
+}

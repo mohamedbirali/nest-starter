@@ -1,0 +1,30 @@
+{
+  "name": "common-policy",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/policy/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/policy",
+        "tsConfig": "libs/bee/common/policy/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/policy/package.json",
+        "main": "libs/bee/common/policy/src/index.ts",
+        "assets": ["libs/bee/common/policy/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/policy/**/*.ts",
+          "libs/bee/common/policy/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

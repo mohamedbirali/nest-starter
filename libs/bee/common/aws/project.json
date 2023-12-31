@@ -1,0 +1,30 @@
+{
+  "name": "common-aws",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/aws/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/aws",
+        "tsConfig": "libs/bee/common/aws/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/aws/package.json",
+        "main": "libs/bee/common/aws/src/index.ts",
+        "assets": ["libs/bee/common/aws/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/aws/**/*.ts",
+          "libs/bee/common/aws/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

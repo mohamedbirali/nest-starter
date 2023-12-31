@@ -1,0 +1,30 @@
+{
+  "name": "bee-configs",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/configs/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/configs",
+        "tsConfig": "libs/bee/configs/tsconfig.lib.json",
+        "packageJson": "libs/bee/configs/package.json",
+        "main": "libs/bee/configs/src/index.ts",
+        "assets": ["libs/bee/configs/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/configs/**/*.ts",
+          "libs/bee/configs/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:configs"]
+}

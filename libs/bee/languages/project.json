@@ -1,0 +1,30 @@
+{
+  "name": "bee-languages",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/languages/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/languages",
+        "tsConfig": "libs/bee/languages/tsconfig.lib.json",
+        "packageJson": "libs/bee/languages/package.json",
+        "main": "libs/bee/languages/src/index.ts",
+        "assets": ["libs/bee/languages/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/languages/**/*.ts",
+          "libs/bee/languages/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:lang"]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "common-error",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/error/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/error",
+        "tsConfig": "libs/bee/common/error/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/error/package.json",
+        "main": "libs/bee/common/error/src/index.ts",
+        "assets": ["libs/bee/common/error/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/error/**/*.ts",
+          "libs/bee/common/error/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

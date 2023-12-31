@@ -1,0 +1,224 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+  // shadowDatabaseUrl = env("DATABASE_URL")
+}
+
+// ENTITIES
+
+// already in prod
+model users {
+  id                    Int             @id @default(autoincrement())
+  email                 String          @unique
+  username              String          @unique
+  first_name            String?
+  last_name             String?
+  birth_at              DateTime?
+  mobile_number         String?         @unique
+  password              String? //
+  token                 String?
+  token_validity_at     DateTime?
+  two_fa_secret         String?
+  two_fa_throttle_time  String?
+  password_created_at   DateTime? //
+  password_expired_at   DateTime?
+  password_attempt      Int?            @default(0)
+  sign_up_from          String?         @default("PUBLIC")
+  salt                  String?
+  is_active             Boolean?        @default(false) // if email validated
+  is_blocked            Boolean?        @default(false)
+  blocked_at            DateTime?
+  is_inactive_permanent Boolean?        @default(false)
+  created_at            DateTime        @default(now()) @db.Timestamptz(2)
+  updated_at            DateTime        @default(now()) @updatedAt @db.Timestamptz(2)
+  role                  role_entity?    @relation(fields: [role_id], references: [id])
+  avatar                aws_s3_entity?
+  refresh_token         refresh_tokens?
+  role_id               Int?
+
+  @@index([email, username, password, password_attempt])
+}
+
+model api_keys {
+  id         Int               @id @default(autoincrement())
+  type       ENUM_API_KEY_TYPE
+  name       String            @unique
+  key        String            @unique
+  hash       String
+  is_active  Boolean           @default(true)
+  start_at   DateTime          @default(now()) @db.Timestamptz(2)
+  end_at     DateTime          @db.Timestamptz(2)
+  created_at DateTime          @default(now()) @db.Timestamptz(2)
+  updated_at DateTime          @default(now()) @updatedAt @db.Timestamptz(2)
+  // users   users       @relation(fields: [user_id], references: [id])
+  // user_id       Int               @unique
+  loggers    loggers[]
+}
+
+model loggers {
+  id          Int                 @id @default(autoincrement())
+  level       ENUM_LOGGER_LEVEL?
+  action      ENUM_LOGGER_ACTION?
+  method      ENUM_REQUEST_TYPE?
+  request_id  String?
+  // user_id     Int?
+  api_key     api_keys?           @relation(fields: [api_key_id], references: [id])
+  role_type   ENUM_ROLE_TYPE?
+  description String?
+  params      String?
+  bodies      String?
+  status_code Int?
+  path        String?
+  tags        String[]
+  api_key_id  Int?
+}
+
+model cv_proposals {
+  id                      Int      @id @default(autoincrement())
+  entreprise_name         String
+  entreprise_mail         String   @unique
+  entreprise_market_value String?
+  entreprise_logo         String?
+  entreprise_adresse      String?
+  employee_name           String?
+  is_answered             Boolean  @default(false) // end
+  condidate_mail          String?
+  diplome_name            String?
+  university_name         String?
+  project_type            String? // end
+  found_in                String? // end
+  send_attempts           Int?     @default(0)
+  attachements            String[] @default([])
+  created_at              DateTime @default(now())
+  updated_at              DateTime @default(now()) @updatedAt
+}
+
+// next versions
+
+model refresh_tokens {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique @default("--")
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  user       users?   @relation(fields: [user_id], references: [id])
+  user_id    Int      @unique
+}
+
+model role_entity {
+  id                     Int                  @id @default(autoincrement())
+  name                   String               @unique
+  description            String?
+  is_active              Boolean              @default(true)
+  type                   ENUM_ROLE_TYPE //
+  users                  users[]
+  role_permission_entity permission_on_role[]
+}
+
+model permission_entity {
+  id                     Int                  @id @default(autoincrement())
+  resources              String
+  description            String
+  path                   String
+  method                 ENUM_REQUEST_TYPE    @default(GET)
+  is_default             Boolean
+  role_permission_entity permission_on_role[]
+}
+
+model permission_on_role {
+  role          role_entity       @relation(fields: [role_id], references: [id])
+  role_id       Int
+  permession    permission_entity @relation(fields: [permession_id], references: [id])
+  permession_id Int
+  assigned_by   String?
+  created_at    DateTime          @default(now())
+
+  @@id([role_id, permession_id])
+}
+
+model aws_s3_entity {
+  id                  Int    @id @default(autoincrement())
+  path                String
+  path_with_file_name String
+  filename            String
+  completed_url       String
+  base_url            String
+  mime                String
+  users               users? @relation(fields: [user_id], references: [id])
+  user_id             Int    @unique
+}
+
+model setting_entity {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String
+  type        EUM_SETTING_TYPE
+  value       String
+}
+
+model customer_entity {
+  id         Int      @id @default(autoincrement())
+  email      String?
+  phone      String[]
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model email_template_entity {
+  id         Int      @id @default(autoincrement())
+  title      String   @unique
+  slug       String?
+  sender     String?
+  subject    String?
+  body       String?
+  is_default Boolean?
+}
+
+// ENUMS
+
+enum ENUM_LOGGER_LEVEL {
+  DEBUG
+  INFO
+  WARN
+  FATAL
+}
+
+enum ENUM_LOGGER_ACTION {
+  LOGIN
+  TEST
+}
+
+enum ENUM_ROLE_TYPE {
+  SUPER_ADMIN
+  USER
+  ADMIN
+}
+
+enum ENUM_REQUEST_TYPE {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+  OPTIONS
+  HEAD
+}
+
+enum ENUM_API_KEY_TYPE {
+  SERVICE
+  PUBLIC
+}
+
+enum EUM_SETTING_TYPE {
+  BOOLEAN
+  STRING
+  ARRAY_OF_STRING
+  NUMBER
+}

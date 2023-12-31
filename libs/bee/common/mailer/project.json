@@ -1,0 +1,30 @@
+{
+  "name": "common-mailer",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/mailer/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/mailer",
+        "tsConfig": "libs/bee/common/mailer/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/mailer/package.json",
+        "main": "libs/bee/common/mailer/src/index.ts",
+        "assets": ["libs/bee/common/mailer/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/mailer/**/*.ts",
+          "libs/bee/common/mailer/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

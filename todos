@@ -1,0 +1,4 @@
+- resolve circular deps
+- only libs interacts with db imports common libs
+- each lib's guards should depend on any other lib
+- for entities add default values

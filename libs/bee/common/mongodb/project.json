@@ -1,0 +1,30 @@
+{
+  "name": "common-mongodb",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/mongodb/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/mongodb",
+        "tsConfig": "libs/bee/common/mongodb/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/mongodb/package.json",
+        "main": "libs/bee/common/mongodb/src/index.ts",
+        "assets": ["libs/bee/common/mongodb/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/mongodb/**/*.ts",
+          "libs/bee/common/mongodb/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

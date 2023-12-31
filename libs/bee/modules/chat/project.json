@@ -1,0 +1,30 @@
+{
+  "name": "bee-chat",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/modules/chat/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/modules/chat",
+        "tsConfig": "libs/bee/modules/chat/tsconfig.lib.json",
+        "packageJson": "libs/bee/modules/chat/package.json",
+        "main": "libs/bee/modules/chat/src/index.ts",
+        "assets": ["libs/bee/modules/chat/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/modules/chat/**/*.ts",
+          "libs/bee/modules/chat/package.json"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

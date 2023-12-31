@@ -1,0 +1,30 @@
+{
+  "name": "bee-entery",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/entery/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/entery",
+        "tsConfig": "libs/bee/entery/tsconfig.lib.json",
+        "packageJson": "libs/bee/entery/package.json",
+        "main": "libs/bee/entery/src/index.ts",
+        "assets": ["libs/bee/entery/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/entery/**/*.ts",
+          "libs/bee/entery/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

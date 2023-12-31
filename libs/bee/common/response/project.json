@@ -1,0 +1,30 @@
+{
+  "name": "common-response",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/response/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/response",
+        "tsConfig": "libs/bee/common/response/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/response/package.json",
+        "main": "libs/bee/common/response/src/index.ts",
+        "assets": ["libs/bee/common/response/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/response/**/*.ts",
+          "libs/bee/common/response/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

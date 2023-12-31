@@ -1,0 +1,30 @@
+{
+  "name": "user",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/modules/user/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/modules/user",
+        "tsConfig": "libs/bee/modules/user/tsconfig.lib.json",
+        "packageJson": "libs/bee/modules/user/package.json",
+        "main": "libs/bee/modules/user/src/index.ts",
+        "assets": ["libs/bee/modules/user/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/modules/user/**/*.ts",
+          "libs/bee/modules/user/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

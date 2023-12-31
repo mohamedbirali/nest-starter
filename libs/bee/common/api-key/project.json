@@ -1,0 +1,30 @@
+{
+  "name": "api-key",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/api-key/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/api-key",
+        "tsConfig": "libs/bee/common/api-key/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/api-key/package.json",
+        "main": "libs/bee/common/api-key/src/index.ts",
+        "assets": ["libs/bee/common/api-key/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/api-key/**/*.ts",
+          "libs/bee/common/api-key/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

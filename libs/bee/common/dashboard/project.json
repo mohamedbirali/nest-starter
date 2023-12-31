@@ -1,0 +1,30 @@
+{
+  "name": "common-dashboard",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/dashboard/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/dashboard",
+        "tsConfig": "libs/bee/common/dashboard/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/dashboard/package.json",
+        "main": "libs/bee/common/dashboard/src/index.ts",
+        "assets": ["libs/bee/common/dashboard/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/dashboard/**/*.ts",
+          "libs/bee/common/dashboard/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

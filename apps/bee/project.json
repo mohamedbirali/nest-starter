@@ -1,0 +1,60 @@
+{
+  "name": "bee",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/bee/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/bee",
+        "main": "apps/bee/src/main.ts",
+        "tsConfig": "apps/bee/tsconfig.app.json",
+        "assets": [
+          "apps/bee/src/assets"
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/bee/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "bee:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "bee:build:development"
+        },
+        "production": {
+          "buildTarget": "bee:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/bee/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "type:app-api"
+  ]
+}

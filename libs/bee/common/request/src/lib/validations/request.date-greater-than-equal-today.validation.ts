@@ -1,0 +1,40 @@
+import { Injectable } from '@nestjs/common';
+import {
+  registerDecorator,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
+import { HelperDateService } from '@bee/common/helper'; ///services/helper.date.service';
+
+@ValidatorConstraint({ async: true })
+@Injectable()
+export class DateGreaterThanEqualTodayConstraint
+  implements ValidatorConstraintInterface
+{
+  constructor(private readonly helperDateService: HelperDateService) {}
+
+  validate(value: string): boolean {
+    const todayDate = this.helperDateService.startOfDay();
+    const valueDate = this.helperDateService.startOfDay(
+      this.helperDateService.create(value),
+    );
+
+    return valueDate >= todayDate;
+  }
+}
+
+export function DateGreaterThanEqualToday(
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: Record<string, any>, propertyName: string): any {
+    registerDecorator({
+      name: 'DateGreaterThanEqualToday',
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [],
+      validator: DateGreaterThanEqualTodayConstraint,
+    });
+  };
+}

@@ -1,0 +1,416 @@
+<div class="flex flex-col flex-auto overflow-auto">
+    <div class="flex flex-col min-w-0 pb-24 pt-4 border-b overflow-hidden bg-primary-200">
+        <!-- absolute inset-0  -->
+        <div 
+            class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 pb-4 sm:pt-2 sm:pb-4 sm:px-10 ">
+            <div class="flex-1 min-w-0">
+                <div>
+                    <div class="mb-2">
+                        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                            <button
+                                *ngIf="isSidebar"
+                                mat-icon-button
+                                (click)="managementComponent.drawer.toggle()"
+                                >
+                                <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                            </button>
+                           {{listName | titlecase}}
+                        </h2>
+                    </div>
+                    <div class="hidden sm:flex flex-wrap items-center font-medium">
+                        <mat-icon
+                            class="icon-size-5 text-secondary mr-1"
+                            [svgIcon]="'heroicons_solid:user'">
+                        </mat-icon>
+                        <div class="flex justify-center">
+                            <mat-icon
+                                class="icon-size-5 text-secondary mr-1"
+                                [svgIcon]="'heroicons_solid:chevron-right'"></mat-icon>
+                            <a class="whitespace-nowrap text-on-hover">{{listName.split(" ")[1] | titlecase}}</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col flex-auto p-4 -mt-20 min-w-0">
+        <fuse-card 
+            class="px-6 h-16 border rounded-bl-none rounded-br-none border-b sticky left-0 flex items-center justify-center">
+            <h2 class="text-xl font-semibold my-0 pr-4 border-r mr-4 hidden sm:block">
+                <span *ngIf="selection.isEmpty()">{{listName | titlecase}}</span>
+                <span *ngIf="selection.hasValue()">{{ selection.selected.length }}
+                    <!-- refactor condition -->
+                    {{listName | titlecase}}<span *ngIf="selection.selected.length > 1">s</span> sélectionné<span *ngIf="selection.selected.length > 1">s</span>
+                </span>
+            </h2>
+
+            <div *ngIf="selection.hasValue()" class="mr-4 pr-4 border-r">
+                <button (click)="deleteRowSelected(selection.selected)"
+                        color="warn"
+                        mat-icon-button
+                        matTooltip="Supprimer"
+                        type="button">
+                    <mat-icon svgIcon="heroicons_outline:trash"></mat-icon>
+                </button>
+            </div>
+
+            <form [formGroup]="searchForm" class="flex-none">
+                <!-- Note: for angular +15 has this property subscriptSizing="dynamic" -->
+                <mat-form-field subscriptSizing="dynamic" class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-50">
+                    <mat-icon class="icon-size-4 text-secondary mr-4" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+                        <input 
+                            matInput
+                            formControlName="search"
+                            placeholder="Rechercher..."
+                            type="search">
+                </mat-form-field>
+            </form>
+
+            <span class="flex-1"></span>
+
+            <button [matMenuTriggerFor]="columnFilterMenu"
+                    class="ml-4 rounded-full shadow-none"
+                    mat-mini-fab
+                    [color]="'none'"
+                    matTooltip="Filtrer les colonnes"
+                    type="button">
+                <mat-icon *ngIf="originalLength === visibleColumns.length" svgIcon="heroicons_outline:funnel"></mat-icon>
+                <mat-icon *ngIf="originalLength !== visibleColumns.length" svgIcon="heroicons_solid:funnel"></mat-icon>
+            </button>
+
+            <button 
+                    *ngIf="separatedAction"
+                    (click)="chooseAction('create')"
+                    class="ml-4 rounded-full shadow-none"
+                    color="primary"
+                    mat-mini-fab
+                    [matTooltip]="'Ajouter ' + listName"
+                    type="button">
+            <mat-icon svgIcon="heroicons_outline:plus"></mat-icon>
+            </button>
+        </fuse-card>
+
+        <!-- table -->
+        <ng-container *ngIf="visibleColumns.length; else nthSelected"></ng-container>
+        <div 
+            class="overflow-y-hidden"
+            [ngClass]="visibleColumns.length ? '' : 'hidden'"
+            >
+        <ng-container *tuiLet="datasource$ | async as datasource">
+            <table
+                mat-table 
+                #table
+                @stagger 
+                [dataSource]="datasource" 
+                matSort
+                cdkDropList
+                cdkDropListOrientation="horizontal"
+                (cdkDropListDropped)="drop($event)"
+                class="overflow-auto overscroll-none"
+            >
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                    <th 
+                        mat-header-cell 
+                        cdkDrag 
+                        *matHeaderCellDef 
+                        [ngClass]="tableCssClasses.checkBox.th"
+                        >
+                        <mat-checkbox *tuiLet="mainCheckBox$ | async as isChecked"
+                            class="p-0 ml-3 max-h-8"
+                            [class.mdc-form-field]="'p-0 m-0'"
+                            (change)="onChangeCheckBox($event.checked)" 
+                            [checked]="isChecked"
+                            [indeterminate]="selection.hasValue() && !isChecked"
+                            [aria-label]="isChecked ? 'deselect all':'select all'">
+                            <!-- note: [checked] & [indeterminate] just design-->
+                        </mat-checkbox>
+                    </th>
+                    <td 
+                        mat-cell 
+                        *matCellDef="let row" 
+                        [ngClass]="tableCssClasses.checkBox.td">
+                        <mat-checkbox 
+                            (click)="$event.stopPropagation()" 
+                            (change)="toggleSelection(row)"
+                            class="p-0 ml-3"
+                            [class.mdc-form-field]="'p-0 m-0'"
+                            [checked]="selection.isSelected(row)"
+                            [aria-label]="selection.isSelected(row)?'deselect':'select'">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                
+                <!-- will not show a deplucated column error -->
+                <ng-container *ngFor="let column of columns; trackBy: trackByProperty; let i = index">
+
+                    <!-- text -->
+                    <ng-container *ngIf="column.type === 'text'" [matColumnDef]="column.property">
+                        <th mat-header-cell
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.common.th" 
+                            mat-sort-header
+                            > 
+                            <div class="ml-1">{{ column.label }}</div>
+                        </th>
+                        <td 
+                            mat-cell
+                            *matCellDef="let row" 
+                            [ngClass]="column.cssClasses">
+                            <ng-container *tuiLet="onMediaChange$ | async as mediaWatcher">
+                                {{ !mediaWatcher.includes('md') ? (row[column.property] | eatruncate) ?? '--' : row[column.property] ?? '--' }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <!-- color -->
+                    <ng-container *ngIf="column.type === 'color'" [matColumnDef]="column.property">
+                        <th mat-header-cell
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.common.th" 
+                            mat-sort-header
+                            > 
+                            <div class="ml-1 text-center">{{ column.label }}</div>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="justify-start" [ngClass]="column.cssClasses">
+                            <div class="flex flex-row justify-start w-full space-x-1">
+                                <div 
+                                    class="h-6 w-6 rounded-full ml-3" 
+                                    (click)="$event.stopPropagation()"
+                                    [cdkCopyToClipboard]="row[column.property]"
+                                    [cdkCopyToClipboardAttempts]="5"
+                                    (copied)="copyState($event)"
+                                    [matTooltip]="'Copier'" 
+                                    [matTooltipPosition]="'above'"
+                                    [ngStyle]="{'background-color': row[column.property]}">
+                                </div> 
+                            </div>
+                        </td>
+                    </ng-container>
+                    <!-- contact -->
+                    <ng-container *ngIf="column.type === 'contact'" [matColumnDef]="column.property">
+                        <th  
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.common.th"
+                            mat-header-cell 
+                            >
+                            <!-- empty -->
+                        </th> 
+                        <td mat-cell *matCellDef="let row" [ngClass]="column.cssClasses" class="max-w-18 p-1">
+                            <div class="flex justify-center items-center w-full space-x-2">
+                                <!-- phone -->
+                                <a (click)="$event.stopPropagation()"
+                                    class="leading-none icon-size-7 flex items-center justify-center hover:bg-hover text-primary bg-primary/10"
+                                    [href]="'tel:' + (row['gsm'] | eaphone)"
+                                    mat-icon-button>
+                                    <mat-icon class="icon-size-5 p-0 text-on-primary-300" svgIcon="heroicons_solid:phone"></mat-icon>
+                                </a>
+                                <!-- todo: just uncomment(ctrl+/) code below -->
+                                <!-- <a (click)="$event.stopPropagation()"
+                                    class="leading-none icon-size-7 flex items-center justify-center hover:bg-hover text-primary bg-primary/10"
+                                    [href]="'mailto:' + row['email']"
+                                    mat-icon-button>
+                                    <mat-icon class="icon-size-5 p-0 text-on-primary-300" svgIcon="heroicons_outline:mail"></mat-icon>
+                                </a> -->
+                                <!-- other contac info -->
+                            </div>
+                        </td>
+                    </ng-container>
+                    <!-- image  // todo: refactor tuiProviders-->
+                    <ng-container *ngIf="column.type === 'image'" [matColumnDef]="column.property">
+                        <th 
+                            mat-header-cell  
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.image.th"
+                        > 
+                        <!-- empty --> 
+                    </th>
+                        <td 
+                            mat-cell 
+                            *matCellDef="let row" 
+                            class="max-w-12 pl-2 pr-2" 
+                            [ngClass]="column.cssClasses">
+                            <tui-avatar
+                                class="w-7 h-7 text-xs"
+                                [text]="row.first_name+' '+row.last_name"
+                                [autoColor]="true"
+                            ></tui-avatar>
+                        </td>
+                    </ng-container>
+                    <!-- stack avatars -->
+                    <ng-container *ngIf="column.type === 'stackAvatars'" [matColumnDef]="column.property">
+                        <th 
+                            mat-header-cell 
+                            *matHeaderCellDef
+                            mat-sort-header
+                            [disabled]="true" 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.common.th"
+                        >
+                        <div class="ml-1">{{ column.label }}</div>
+                        </th>
+                        <td  mat-cell *matCellDef="let row" [ngClass]="column.cssClasses"
+                            (click)="$event.stopPropagation();">
+                            <ea-stack-avatar
+                                [avatarSources]="row[column.property]"
+                                (onCheckbox)="handleUpdateAvatars($event, row)"
+                            ></ea-stack-avatar>
+                        </td>
+                    </ng-container>
+                    <!-- array or objects -->
+                    <ng-container *ngIf="column.type === 'oneToMany'" [matColumnDef]="column.property">
+                        <th 
+                            mat-header-cell
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.common.th"
+                        >
+                        <div class="ml-1">{{ column.label }}</div>
+                        </th>
+                        <td 
+                            *matCellDef="let row" 
+                            [ngClass]="column.cssClasses" 
+                            mat-cell
+                            >
+                            <div 
+                                class="flex items-center" 
+                                *ngFor="let item of row[column.property]" 
+                                [matTooltip]="item.nom"
+                                [matTooltipPosition]="'above'"
+                                >
+                                <!-- todo: set a pipe -->
+                                {{item.first_name}} {{item.last_name}} {{item.name}} {{item.nom | eatruncate:true}}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <!-- object -->
+                    <ng-container *ngIf="column.type === 'oneToOne'" [matColumnDef]="column.property">
+                        <th 
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.shared.th"
+                            mat-header-cell 
+                            mat-sort-header
+                            >
+                        <div class="ml-1">{{ column.label }}</div>
+                        </th>
+                        <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                            <!-- pipe that accepts an array of props arg (optional) -->
+                            {{ row[column.property] | eaonetoone:column }}
+                        </td>
+                    </ng-container>
+                    <!-- toggle -->
+                    <ng-container *ngIf="column.type === 'toggle'" [matColumnDef]="column.property">
+                        <th 
+                            mat-header-cell 
+                            *matHeaderCellDef 
+                            cdkDrag 
+                            [ngClass]="tableCssClasses.shared.th+ ' text-center'"
+                        >
+                        <div class="ml-1">{{ column.label }}</div>
+                        </th>
+                        <td *matCellDef="let row" class="text-center" mat-cell>
+                            <mat-slide-toggle
+                                (click)="$event.stopPropagation()" 
+                                [checked]="row[column.property]"
+                                    (change)="toggle(row, column.property, $event)"
+                            ></mat-slide-toggle>
+                        </td>
+                    </ng-container>
+                    <!-- actions -->
+                    <ng-container *ngIf="column.type === 'button'" [matColumnDef]="column.property">
+                        <th 
+                            mat-header-cell 
+                            cdkDrag 
+                            *matHeaderCellDef 
+                            width='80' 
+                            [ngClass]="tableCssClasses.shared.th"
+                            style="text-align: center;">
+                            <div class="ml-1">{{ column.label }}</div>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                            <div fxFlex="row" fxLayoutAlign="end center">
+
+                                <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                                    (click)="$event.stopPropagation();">
+                                    <mat-icon class="secondary-text">
+                                        more_vert
+                                    </mat-icon>
+                                </button>
+
+                                <mat-menu #moreMenu="matMenu">
+                                    <button *ngFor="let action of actions" mat-menu-item [attr.aria-label]="action.name"
+                                        (click)="chooseAction(action.name, row)">
+                                        {{action.label}}
+                                        <mat-icon [color]="action.events.icon.color"> {{action.events.icon.name}}
+                                        </mat-icon>
+                                        <span> {{action.events.label}} </span>
+                                    </button>
+                                </mat-menu>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                </ng-container>
+                <!-- mat-header-cell -->
+                <tr *matHeaderRowDef="visibleColumns" mat-header-row class="max-h-8 border-l border-r">
+                </tr>
+                <tr 
+                    mat-row
+                    (click)="chooseAction('edit', row)" 
+                    *matRowDef="let row; columns: visibleColumns;"
+                    @fadeInUp
+                    class="cursor-pointer bg-card h-12 border-l border-r hover:ease-out hover:duration-200" 
+                    >
+                </tr>
+                <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+            </table>
+        </ng-container>
+        </div>
+
+        <!-- pagination -->
+        <mat-paginator 
+            [pageSizeOptions]="pageSizeOptions" 
+            [pageSize]="pageSize"
+            [showFirstLastButtons]="true"
+            [ngClass]="visibleColumns.length ? '' : 'hidden'"
+            class="flex justify-end border-l border-b border-r bg-hover"
+            >
+        </mat-paginator>
+
+        <!-- when no column is visible -->
+        <ng-template #nthSelected>
+            <div @fadeInUp class="flex justify-center items-center h-64 bg-accent-50 text-xl font-semibold">
+                Sélectionner au moins une colonne !
+            </div>
+        </ng-template>
+        <mat-divider></mat-divider>
+    </div>
+</div>
+
+<!-- chockbox of columns -->
+<mat-menu 
+    #columnFilterMenu="matMenu"
+    class="flex flex-col" 
+    xPosition="before" 
+    yPosition="below">
+    <button 
+        *ngFor="let column of columns; let i = index"
+        mat-menu-item 
+        (click)="toggleColumnVisibility(column, $event)" 
+        [disabled]="(i === 0) || (i === columns.length-1)"
+    >
+        <!-- toReview: [checked]="column.visible" -->
+        <mat-checkbox 
+            (click)="$event.stopPropagation()"
+            [(ngModel)]="column.visible" 
+            color="primary"
+        >
+        <div class="ml-1 uppercase">{{ column.label }}</div>
+        </mat-checkbox>
+    </button>
+</mat-menu>

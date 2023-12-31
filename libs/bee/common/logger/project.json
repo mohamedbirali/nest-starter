@@ -1,0 +1,30 @@
+{
+  "name": "common-logger",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/logger/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/logger",
+        "tsConfig": "libs/bee/common/logger/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/logger/package.json",
+        "main": "libs/bee/common/logger/src/index.ts",
+        "assets": ["libs/bee/common/logger/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/logger/**/*.ts",
+          "libs/bee/common/logger/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

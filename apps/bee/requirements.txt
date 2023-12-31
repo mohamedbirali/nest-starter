@@ -1,0 +1,61 @@
+This app should use those tools only:
+  - Typescript
+  - NestJs
+  - TypeOrm
+  - PostgresSQL
+  - bullMq
+  - AWS S3
+  - Microservice architechture
+  - Postman (public)
+  - Http
+  - Jest or Cypress !
+  - Socket.io
+  - eslint & prettier
+  - Docker
+  - Gitlab
+  - Nx
+  - twilio
+
+Features to implement:
+  - Auth, RBAC, StateFull, 2FA, Google, Github
+  - Mailing + templates
+  - Upload files
+  - import/export data csv -> SQL
+  - Traduction
+  - Tests
+  - condidature spontané
+
+Resources:
+  - https://github.com/juicycleff/ultimate-backend
+  - i18: https://github.com/brocoders/nestjs-boilerplate
+  - test: https://github.com/VincentJouanne/nest-clean-architecture
+  - CRM: https://github.com/gobeam/truthy
+  - socket.io: https://github.com/mokuteki225/nest-websockets-chat-boilerplate
+  - twilio & poolifier: https://github.com/rubiin/ultimate-nest
+  - zod validation: https://github.com/Innei/nest-http-prisma-zod
+
+SFD: commerce website
+  1 - Users:
+    Super Admin (me): tracks all actions and statics of users
+    admin: does somth.
+    RH: add / update data, send emails
+    clients:
+      producer:
+        owens the product: manage their data, send msg to support,
+        delivery: ships the product (chipsen).
+      consumer: read producers posts.
+  2 - Actions:
+    poducers can read delivery profiles.
+    delivery profile can be trsted by the platform.
+    consumers can read / update product.
+    delivery / clients confirms.
+    delivery sends goods to owerns.
+
+  3 - Limits v1:
+    auth,
+    rbac,
+    owners cann add products,
+    consumers can read products,
+    delivery can read,
+
+

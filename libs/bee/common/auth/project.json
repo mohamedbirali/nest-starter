@@ -1,0 +1,30 @@
+{
+  "name": "common-auth",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/auth/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/auth",
+        "tsConfig": "libs/bee/common/auth/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/auth/package.json",
+        "main": "libs/bee/common/auth/src/index.ts",
+        "assets": ["libs/bee/common/auth/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/auth/**/*.ts",
+          "libs/bee/common/auth/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api", "scope:common"]
+}

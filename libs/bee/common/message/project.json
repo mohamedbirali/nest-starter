@@ -1,0 +1,30 @@
+{
+  "name": "common-message",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/message/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/message",
+        "tsConfig": "libs/bee/common/message/tsconfig.lib.json",
+        "packageJson": "libs/bee/common/message/package.json",
+        "main": "libs/bee/common/message/src/index.ts",
+        "assets": ["libs/bee/common/message/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/message/**/*.ts",
+          "libs/bee/common/message/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "bee-types",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/bee/common/types/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bee/common/types"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/bee/common/types/**/*.ts",
+          "libs/bee/common/types/package.json"
+        ]
+      }
+    }
+  },
+  "tags": ["type:api-common"]
+}
